@@ -38,9 +38,7 @@
     - CPU min MHz:         800.0000
     - BogoMIPS:            4800.00
 
-Download this file and uncomment the lines below to preview RisingWave dashboard Stats:
-<!-- 
 - 100K 
   - ![100K](https://i.ibb.co/PQMH19m/openobserver-100k.png)
-- 1M
-  - ![1M](https://xxxx.png) -->
+- 5M
+  - ![5M](https://i.ibb.co/rQ6XvNT/openobserve-5-M.png)

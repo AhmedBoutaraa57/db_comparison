@@ -34,7 +34,7 @@
     - 5M   => 433MB after compaction => 388MB
   
   - Memory:
-    - 100k => 190MB, [285k => 350MB, 500K => 605MB]
+    - 100k => 190MB, 285k => 350MB, 500K => 605MB
     - 1M   => 840MB
     - 5M   => 1.25GB
   
@@ -48,9 +48,7 @@
     - 1M   => 1.4s
     - 5M   => 7s
 
-Download this file and uncomment the lines below to preview RisingWave dashboard Stats:
-<!-- 
 - 500K 
   - ![500K](https://i.ibb.co/RY4tskZ/RV-500K.png)
-- 1M
-  - ![1M](https://i.ibb.co/YQqGP1w/RV-5M.png) -->
+- 5M
+  - ![5M](https://i.ibb.co/YQqGP1w/RV-5M.png)
