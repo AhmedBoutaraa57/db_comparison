@@ -1,0 +1,20 @@
+{
+  "name": "data_platform",
+  "version": "1.0.0",
+  "description": "",
+  "main": "influx.js",
+  "scripts": {
+    "start": "node influx.js"
+  },
+  "keywords": [],
+  "author": "ahmed_boutaraa",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "@influxdata/influxdb3-client": "^0.5.0",
+    "apache-arrow": "^14.0.1",
+    "dotenv": "^16.3.1",
+    "pg": "^8.11.3",
+    "uuid": "^9.0.1"
+  }
+}
