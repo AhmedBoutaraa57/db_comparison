@@ -26,6 +26,15 @@ const generateUniqueID = () => {
   return `${timestamp}${paddedCounter}${randomPart}`;
 };
 
+const generateLimitedIds = (n = 10) => {
+  return `device-${Math.floor(Math.random() * n)}`;
+}
+
+const random_temperature = (max = 0, min = 100) => {
+  const randomTemp = Math.random() * (max - min) + min;
+  return randomTemp.toFixed(2);
+}
+
 const create_source = async () => {
   const create_walk_query = `CREATE TABLE walk(distance INT, duration INT)`;
   const create_temperatures_query = `CREATE TABLE temperature(ts bigint, device_id VARCHAR, temperature FLOAT)`;
@@ -70,16 +79,15 @@ const query_source = async () => {
 const populate_source = async () => {
   const pool = new Pool(credentials);
   const COUNTER = 1000 * 100;
-  const { rows } = await pool.query(`SELECT COUNT(*) AS document_count FROM temperature`);
+  const { rows } = await pool.query(`SELECT COUNT(*) AS document_count FROM temp_source`);
   const { document_count } = rows[0] || {};
-  const random_number = () => Math.floor(Math.random() * 15);
   let count = parseInt(document_count);
   while (count++ < COUNTER) {
     // console.time('myCodeExecution');
-    const dev_id = generateUniqueID();
+    const dev_id = generateLimitedIds(8);
     const insert_temperature_query = `
-      INSERT INTO temperature (ts, device_id, temperature)
-      VALUES (${Date.now()}, '${dev_id}', ${random_number().toFixed(2)})
+      INSERT INTO temp_source (ts, device_id, temperature)
+      VALUES (${Date.now()}, '${dev_id}', ${random_temperature(10, 180)})
     `;
     await pool.query(insert_temperature_query);
     console.log(`document counter: ${count}`, dev_id);
@@ -88,4 +96,4 @@ const populate_source = async () => {
   }
   await pool.end();
 }
-// populate_source().catch(console.error); // CALL
+populate_source().catch(console.error); // CALL
