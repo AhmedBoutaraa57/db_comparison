@@ -71,7 +71,7 @@ run the following commands to setup RisingWave + NATS + Grafana
   nats pub HI.WORLD "{\"ts\": 1693844487326, \"device_id\": \"dev-id-78\", \"temperature\": 93.45}"
   mosquitto_pub -h 0.0.0.0 -p 1884 -t HI/WORLD -m "{\"ts\": 1703844487326, \"device_id\": \"dev-id-88\", \"temperature\": 123.56}"
   ```
-- OR use [mqtt-simulator](https://github.com/DamascenoRafael/mqtt-simulator) with the following configuration under `<your-base-dir>/mqtt-simulator/config/settings.json`:
+- OR use [mqtt-simulator](https://github.com/DamascenoRafael/mqtt-simulator) with the following configuration under `<your-base-dir>/mqtt-simulator/config/settings.json`: more details on setting up mqtt simulator can be found in this [readme](https://github.com/AhmedBoutaraa57/db_comparison/blob/main/nats/mqtt_simulator.md)
    
   ```
   {
@@ -105,9 +105,9 @@ run the following commands to setup RisingWave + NATS + Grafana
                       "NAME": "device_id",
                       "TYPE": "int",
                       "INITIAL_VALUE": 1,
-                      "MIN_VALUE": 10,
-                      "MAX_VALUE": 50,
-                      "MAX_STEP": 29,
+                      "MIN_VALUE": 1,
+                      "MAX_VALUE": 1000000000,
+                      "MAX_STEP": 1,
                       "RETAIN_PROBABILITY": 0
                   }
               ]
