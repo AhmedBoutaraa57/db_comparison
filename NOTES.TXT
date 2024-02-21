@@ -1,0 +1,209 @@
+https://eclipse.dev/ditto/http-api-doc.html
+https://www.hivemq.com/blog/hands-on-guide-using-mqtt-hivemq-eclipse-ditto-digital-twins-iiot
+
+
+curl -X PUT 'http://localhost:8080/api/2/policies/ditto.default:policy' -u 'ditto:ditto' -H 'Content-Type: application/json' -d '{
+	"entries": {
+    	"owner": {
+        	"subjects": {
+            	"nginx:ditto": {
+                	"type": "nginx basic auth user"
+            	}
+        	},
+        	"resources": {
+            	"thing:/": {
+                	"grant": [
+                    	"READ","WRITE"
+                	],
+                	"revoke": []
+            	},
+            	"policy:/": {
+                	"grant": [
+                    	"READ","WRITE"
+                	],
+                	"revoke": []
+            	},
+            	"message:/": {
+                	"grant": [
+                    	"READ","WRITE"
+                	],
+                	"revoke": []
+            	}
+        	}
+    	},
+    	"connection": {
+        	"subjects": {
+            	"connection:nats-jetstream": {
+                	"type": "Connection to NATS"
+            	}
+        	},
+        	"resources": {
+            	"thing:/": {
+                	"grant": [
+                    	"READ","WRITE"
+                	],
+                	"revoke": []
+            	},
+            	"message:/": {
+                	"grant": [
+                    	"READ","WRITE"
+                	],
+                	"revoke": []
+            	}
+        	}
+    	}
+	}
+}'
+
+
+curl -X POST 'http://localhost:8080/api/2/connections' -u 'devops:foobar' -H 'Content-Type: application/json' -d '{
+  "name": "NATS-JETSTREAM",
+  "connectionType": "mqtt",
+  "connectionStatus": "open",
+  "uri": "tcp://nats-server:1884",
+  "sources": [
+    {
+      "addresses": [
+        "twin/microlab/cbeoffice",
+        "twin/microlab/gmtoffice"
+      ],
+      "consumerCount": 1,
+      "qos": 1,
+      "authorizationContext": [
+        "connection:nats-jetstream"
+      ],
+      "enforcement": {
+        "input": "{{ source:address }}",
+        "filters": [
+          "twin/{{ thing:namespace }}/{{ thing:name }}"
+        ]
+      },
+      "headerMapping": {},
+      "replyTarget": {
+        "address": "{{header:reply-to}}",
+        "headerMapping": {},
+        "expectedResponseTypes": [
+          "response",
+          "error"
+        ],
+        "enabled": true
+      }
+    }
+  ],
+  "targets": [
+    {
+      "address": "offices/{{ thing:id }}/downlink",
+      "topics": [
+        "_/_/things/twin/events",
+        "_/_/things/live/messages",
+        "_/_/things/live/commands",
+        "_/_/things/live/events"
+      ],
+      "qos": 1,
+      "authorizationContext": [
+        "connection:nats-jetstream"
+      ],
+      "headerMapping": {}
+    }
+  ],
+  "clientCount": 1,
+  "failoverEnabled": true,
+  "validateCertificates": true,
+  "processorPoolSize": 1,
+  "mappingDefinitions": {
+    "javascript": {
+      "mappingEngine": "JavaScript",
+      "options": {
+        "incomingScript": "",
+        "outgoingScript": ""
+      }
+    }
+  },
+  "tags": []
+}'
+
+
+curl -X PUT 'http://localhost:8080/api/2/things/microlab:cbeoffice' -u 'ditto:ditto' -H 'Content-Type: application/json' -d '{
+  "policyId": "ditto.default:policy",
+  "attributes": {
+    "type": "office",
+    "topic": "microlab/cbeoffice/:id/raw",
+    "emit":"1s",
+    "sensor-type":"moko101",
+    "location": "Building B, Floor 2"
+  },
+  "features": {
+		"fridge1": {
+			"properties": {
+				"TemperatureSensor": {
+					"value": 26
+				},
+				"HumiditySensor": {
+					"value": 12
+				}
+			}
+		},
+		"fridge2": {
+			"properties": {
+				"TemperatureSensor": {
+					"value": 39
+				},
+				"HumiditySensor": {
+					"value": 48
+				}
+			}
+		},
+      "fridge3": {
+			"properties": {
+				"TemperatureSensor": {
+					"value": 17
+				},
+				"HumiditySensor": {
+					"value": 4
+				}
+			}
+		}
+  }
+}'
+
+
+curl -X PUT 'http://localhost:8080/api/2/things/microlab:gmtoffice' -u 'ditto:ditto' -H 'Content-Type: application/json' -d '{
+  "policyId": "ditto.default:policy",
+  "attributes": {
+    "type": "office",
+    "topic": "microlab/gmtoffice/:id/raw",
+    "emit":"1s",
+    "sensor-type":"moko101",
+    "location": "Building B, Floor 2"
+  },
+  "features": {
+		"fridge4": {
+			"properties": {
+				"TemperatureSensor": {
+					"value": 10
+				},
+				"HumiditySensor": {
+					"value": 5
+				}
+			}
+		},
+		"fridge5": {
+			"properties": {
+				"TemperatureSensor": {
+					"value": 24
+				},
+				"HumiditySensor": {
+					"value": 10
+				}
+			}
+		}
+  }
+}'
+
+
+inbox/messages/action | outbox/messages/inform
+curl -X POST \
+ --url http://localhost:8080/api/2/things/microlab:cbeoffice/features/fridge1/inbox/messages/action?timeout=5 \
+ --header 'content-type: text/plain' \
+ --header 'Authorization: Basic ZGl0dG86ZGl0dG8=' \
+ --data 'Hey, how are you?'
