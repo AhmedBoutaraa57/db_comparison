@@ -124,82 +124,109 @@ curl -X POST 'http://localhost:8080/api/2/connections' -u 'devops:foobar' -H 'Co
 
 
 curl -X PUT 'http://localhost:8080/api/2/things/microlab:cbeoffice' -u 'ditto:ditto' -H 'Content-Type: application/json' -d '{
-  "policyId": "ditto.default:policy",
-  "attributes": {
-    "type": "office",
-    "topic": "microlab/cbeoffice/:id/raw",
-    "emit":"1s",
-    "sensor-type":"moko101",
-    "location": "Building B, Floor 2"
-  },
-  "features": {
-		"fridge1": {
-			"properties": {
-				"TemperatureSensor": {
-					"value": 26
-				},
-				"HumiditySensor": {
-					"value": 12
-				}
-			}
-		},
-		"fridge2": {
-			"properties": {
-				"TemperatureSensor": {
-					"value": 39
-				},
-				"HumiditySensor": {
-					"value": 48
-				}
-			}
-		},
-      "fridge3": {
-			"properties": {
-				"TemperatureSensor": {
-					"value": 17
-				},
-				"HumiditySensor": {
-					"value": 4
-				}
-			}
-		}
-  }
+   "policyId":"ditto.default:policy",
+   "attributes":{
+      "type":"office",
+      "topic":"microlab/cbeoffice/:id/raw",
+      "emit":"1s",
+      "sensor-type":"moko101",
+      "location":"Building B, Floor 2"
+   },
+   "features":{
+      "fridge1":{
+         "properties":{
+            "TemperatureSensor":{
+               "value":26
+            },
+            "HumiditySensor":{
+               "value":12
+            }
+         }
+      },
+      "fridge2":{
+         "properties":{
+            "TemperatureSensor":{
+               "value":39
+            },
+            "HumiditySensor":{
+               "value":48
+            }
+         }
+      },
+      "fridge3":{
+         "properties":{
+            "TemperatureSensor":{
+               "value":17
+            },
+            "HumiditySensor":{
+               "value":4
+            }
+         }
+      }
+   }
 }'
 
 
 curl -X PUT 'http://localhost:8080/api/2/things/microlab:gmtoffice' -u 'ditto:ditto' -H 'Content-Type: application/json' -d '{
-  "policyId": "ditto.default:policy",
-  "attributes": {
-    "type": "office",
-    "topic": "microlab/gmtoffice/:id/raw",
-    "emit":"1s",
-    "sensor-type":"moko101",
-    "location": "Building B, Floor 2"
-  },
-  "features": {
-		"fridge4": {
-			"properties": {
-				"TemperatureSensor": {
-					"value": 10
-				},
-				"HumiditySensor": {
-					"value": 5
-				}
-			}
-		},
-		"fridge5": {
-			"properties": {
-				"TemperatureSensor": {
-					"value": 24
-				},
-				"HumiditySensor": {
-					"value": 10
-				}
-			}
-		}
-  }
+   "policyId":"ditto.default:policy",
+   "attributes":{
+      "type":"office",
+      "topic":"microlab/gmtoffice/:id/raw",
+      "emit":"1s",
+      "sensor-type":"moko101",
+      "location":"Building B, Floor 2"
+   },
+   "features":{
+      "fridge4":{
+         "properties":{
+            "TemperatureSensor":{
+               "value":10
+            },
+            "HumiditySensor":{
+               "value":5
+            }
+         }
+      },
+      "fridge5":{
+         "properties":{
+            "TemperatureSensor":{
+               "value":24
+            },
+            "HumiditySensor":{
+               "value":10
+            }
+         }
+      }
+   }
 }'
 
+curl -X PUT 'http://localhost:8080/api/2/things/microlab:cbeoffice.gws' -u 'ditto:ditto' -H 'Content-Type: application/json' -d '{
+   "policyId":"ditto.default:policy",
+   "attributes":{
+      "type":"gateway",
+      "topic":"microlab/cbeoffice/:id/raw",
+      "emit":"100ms",
+      "sensor-type":"gw-x76",
+      "location":"Building A, Floor 1, Area Xyz, Room 13"
+   },
+   "features":{
+      "gateway1":{
+         "properties":{
+			"value": "unknown"
+         }
+      },
+      "gateway2":{
+         "properties":{
+			"value": "unknown"
+         }
+      },
+      "gateway3":{
+         "properties":{
+			"value": "unknown"
+         }
+      }
+   }
+}'
 
 inbox/messages/action | outbox/messages/inform
 curl -X POST \
