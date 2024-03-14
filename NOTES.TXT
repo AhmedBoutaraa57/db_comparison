@@ -201,7 +201,7 @@ curl -X PUT 'http://localhost:8080/api/2/things/microlab:cbeoffice.gws' -u 'ditt
    "policyId":"ditto.default:policy",
    "attributes":{
       "type":"gateway",
-      "topic":"microlab/cbeoffice/:id/raw",
+      "topic":"microlab/cbeoffice/gws/:id/raw",
       "emit":"100ms",
       "sensor-type":"gw-x76",
       "location":"Building A, Floor 1, Area Xyz, Room 13"
