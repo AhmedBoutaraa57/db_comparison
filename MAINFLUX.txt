@@ -1,0 +1,151 @@
+mainfluxlabs-cli users register ahmed@mongrov.com kaito2003
+mainfluxlabs-cli users token ahmed@mongrov.com kaito2003
+
+mainfluxlabs-cli groups create '{"name": "test", "description": "test group"}' $TOKEN
+
+curl -sSiX POST http://localhost/things \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '[
+  {
+    "name": "cbeoffice gateways",
+    "group_id": "e67ba32b-37ab-49dd-a170-968531ec53e1",
+    "metadata": {
+    "attributes":{
+      "type":"gateway",
+      "topic":"microlab/cbeoffice/:id/gws",
+      "emit":"100ms",
+      "sensor-type":"gw-x76",
+      "location":"Building A, Floor 1, Area Xyz, Room 13"
+   },
+   "features":{
+      "gateway1":{
+         "properties":{
+			"value": "unknown"
+         }
+      },
+      "gateway2":{
+         "properties":{
+			"value": "unknown"
+         }
+      },
+      "gateway3":{
+         "properties":{
+			"value": "unknown"
+         }
+      }
+   }
+  }
+  }
+]'
+
+curl -sSiX POST http://localhost/things \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '[
+   {
+      "name": "cbeoffice sensors",
+      "group_id": "e67ba32b-37ab-49dd-a170-968531ec53e1",
+      "metadata": {
+      "attributes":{
+         "type":"office",
+         "topic":"microlab/cbeoffice/:id/raw",
+         "emit":"1s",
+         "sensor-type":"moko101",
+         "location":"Building B, Floor 2"
+      },
+      "features":{
+         "fridge1":{
+            "properties":{
+               "TemperatureSensor":{
+                  "value":26
+               },
+               "HumiditySensor":{
+                  "value":12
+               }
+            }
+         },
+         "fridge2":{
+            "properties":{
+               "TemperatureSensor":{
+                  "value":39
+               },
+               "HumiditySensor":{
+                  "value":48
+               }
+            }
+         },
+         "fridge3":{
+            "properties":{
+               "TemperatureSensor":{
+                  "value":17
+               },
+               "HumiditySensor":{
+                  "value":4
+               }
+            }
+         }
+      }
+   }
+   },
+   {
+      "name": "gmtoffice sensors",
+      "group_id": "e67ba32b-37ab-49dd-a170-968531ec53e1",
+      "metadata": {
+      "attributes":{
+         "type":"office",
+         "topic":"microlab/gmtoffice/:id/raw",
+         "emit":"1s",
+         "sensor-type":"moko101",
+         "location":"Building B, Floor 2"
+      },
+      "features":{
+         "fridge4":{
+            "properties":{
+               "TemperatureSensor":{
+                  "value":10
+               },
+               "HumiditySensor":{
+                  "value":5
+               }
+            }
+         },
+         "fridge5":{
+            "properties":{
+               "TemperatureSensor":{
+                  "value":24
+               },
+               "HumiditySensor":{
+                  "value":10
+               }
+            }
+         }
+      }
+   }
+   }
+]'
+
+curl -sSiX POST http://localhost/channels \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '[
+    {"name": "test1", "group_id": "e67ba32b-37ab-49dd-a170-968531ec53e1"},
+    {"name": "test2", "group_id": "e67ba32b-37ab-49dd-a170-968531ec53e1"}
+  ]'
+
+mainfluxlabs-cli things connect 65aab4a0-3157-4248-a4bd-d250c8b5486a 81f61fe6-67cd-41eb-894a-7845eac993b8 $TOKEN
+
+mainfluxlabs-cli messages send 81f61fe6-67cd-41eb-894a-7845eac993b8 '[{"bn":"cbeoffice gateways","bt":"1713907907718"}]' d1ded492-300a-4191-a86f-cddedcf7278c
+
+curl -sSiX POST http://localhost/http/channels/81f61fe6-67cd-41eb-894a-7845eac993b8/messages \
+  -H "Authorization: Thing d1ded492-300a-4191-a86f-cddedcf7278c" \
+  -H "Content-Type: application/json" \
+  -d '[{"bn":"cbeoffice gateways","bt":1.276020076001e+09,"bu":"A","bver":5,"n":"voltage","u":"V","v":120.1}, {"n":"current","t":-5,"v":1.2}, {"n":"current","t":-4,"v":1.3}]'
+
+curl -sSi http://localhost/channels/81f61fe6-67cd-41eb-894a-7845eac993b8/messages \
+   -H "Authorization: Thing d1ded492-300a-4191-a86f-cddedcf7278c"
+
+mosquitto_sub -u 65aab4a0-3157-4248-a4bd-d250c8b5486a -P d1ded492-300a-4191-a86f-cddedcf7278c -t channels/81f61fe6-67cd-41eb-894a-7845eac993b8/messages -h localhost
+
+mosquitto_pub -u 65aab4a0-3157-4248-a4bd-d250c8b5486a -P d1ded492-300a-4191-a86f-cddedcf7278c -t channels/81f61fe6-67cd-41eb-894a-7845eac993b8/messages -h localhost -m '{"name": "cbeoffice gateways", "value": "disable"}'
+
