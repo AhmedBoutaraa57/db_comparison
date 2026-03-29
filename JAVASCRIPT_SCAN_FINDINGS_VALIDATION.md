@@ -1,4 +1,4 @@
-# Scan Validation Summary
+# JAVASCRIPT Scan Validation Summary
 
 ## Classification
 
