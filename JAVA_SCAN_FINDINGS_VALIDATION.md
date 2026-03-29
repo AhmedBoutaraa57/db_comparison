@@ -1,4 +1,4 @@
-# Java Scan Validation Summary
+# JAVA Scan Validation Summary
 
 Source report: `cognium-java-scan.txt`
 
